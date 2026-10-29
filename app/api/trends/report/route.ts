@@ -1,0 +1,8 @@
+import {trendRoleProfile} from '../../../../lib/trend-role.mjs';
+import {readMember,member,load,json,error,AuthError} from '../../../../lib/runtime';
+import {buildDashboard} from '../../../../lib/trend-analytics.mjs';
+import {marketPresentation} from '../../../../lib/market-presentation.mjs';
+import {trendPermissions,canSeeRecommendation} from '../../../../public/ui/trend-permissions.mjs';
+import {reportSheets,xlsxReport,printableReport} from '../../../../lib/trend-report.mjs';
+export const dynamic='force-dynamic';
+export async function GET(req:Request){try{const account=await readMember(),query=Object.fromEntries(new URL(req.url).searchParams),p=trendRoleProfile(account,query.role);if(!trendPermissions(p).strategicExport)throw new AuthError('Vai hiện tại không được xuất báo cáo chiến lược',403);const current=await load();if(query.mode==='demo'&&!account.owner)throw new AuthError('Không có quyền xem dữ liệu trình diễn',403);const demo=query.mode==='demo',state=demo?marketPresentation().state:current.state,d=buildDashboard(state,p,query,current.version,{presentation:demo,presentationAuthorized:!!account.owner}),sheets=reportSheets(d,demo?[]:(state.trendRecommendations||[]).filter((r:any)=>canSeeRecommendation(r,p)));if(query.format==='html')return json({html:printableReport(d,sheets)});if(query.format!=='xlsx')throw Error('Định dạng báo cáo không hợp lệ');return new Response(xlsxReport(sheets),{headers:{'Content-Type':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','Content-Disposition':`attachment; filename="${demo?'TRINH-DIEN-':''}X-Booster-strategy.xlsx"`,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}})}catch(e){return error(e)}}

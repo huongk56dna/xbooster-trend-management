@@ -1,0 +1,14 @@
+// Read-only examples. Never insert these records into operational state.
+export function paymentPresentation(through){
+ const end=Date.parse(through+'T00:00:00Z');if(!Number.isFinite(end))throw Error('Ngày không hợp lệ');
+ const day=n=>new Date(end+(n-75)*86400000).toISOString().slice(0,10),names=['Đại lý Minh Phát','VLXD Hoàng Gia','Đại lý An Khang','Showroom An Nhiên','Đại lý Thiên Phúc','NPP Thành Đạt','VLXD Nam Việt','Showroom Gia Hưng','Đại lý Hưng Thịnh','NPP Hoàng Minh','VLXD Phú Gia','Đại lý An Phú'];
+ const clients=[],receipts=[],offsets=[],events=[],periods=new Map();
+ names.forEach((name,i)=>{const id='TD-KH-'+String(i+1).padStart(3,'0'),unit=(i+2)*10000000,client={id,name,region:['Miền Nam','Miền Bắc','Miền Trung'][i%3],received:0,used:0,principal:0,interest:0};clients.push(client);let remaining=[];
+ for(const [j,n] of [0,18,40].entries()){const r={id:`TD-PT-${i+1}-${j+1}`,customerId:id,customer:name,date:day(n),amount:unit*(j+2),used:0,status:'Đã xác minh',reference:`TD-GD-${i+1}-${j+1}`};receipts.push(r);remaining.push(r);client.received+=r.amount;events.push({id:r.id,customerId:id,date:r.date,type:'Nhận tiền',credit:r.amount,debit:0,reference:r.reference})}
+ for(const [j,n] of [28,50].entries()){let amount=unit*(j+1),left=amount;const allocations=[];for(const r of remaining.filter(r=>r.date<=day(n))){const take=Math.min(left,r.amount-r.used);if(take){r.used+=take;left-=take;allocations.push({receipt:r.id,amount:take})}}if(left)throw Error('Ví dụ thiếu nguồn đối trừ');const o={id:`TD-HD-${i+1}-${j+1}`,customerId:id,customer:name,date:day(n),amount,order:`TD-DH-${i+1}-${j+1}`,allocations};offsets.push(o);client.used+=amount;events.push({id:o.id,customerId:id,date:o.date,type:'Đối trừ',credit:0,debit:amount,reference:o.id})}
+ client.principal=client.received-client.used;
+ for(let n=0;n<=75;n++){const date=day(n),balance=events.filter(e=>e.customerId===id&&e.date<=date).reduce((v,e)=>v+e.credit-e.debit,0),interest=balance*.08/365,key=date.slice(0,7);client.interest+=interest;if(!periods.has(key))periods.set(key,{period:key,interest:0,rows:[]});const p=periods.get(key);p.interest+=interest;let row=p.rows.find(r=>r.customerId===id);if(!row){row={customerId:id,customer:name,interest:0};p.rows.push(row)}row.interest+=interest;}
+ });
+ for(let i=0;i<4;i++)receipts.push({id:'TD-PT-CHO-'+(i+1),customerId:clients[i].id,customer:clients[i].name,date:through,amount:(i+1)*25000000,used:0,status:i===3?'Cần bổ sung':'Chờ xác minh',reference:'TD-CHO-'+(i+1)});
+ return {through,start:day(0),readonly:true,clients,receipts,offsets,events:events.sort((a,b)=>a.date.localeCompare(b.date)||a.id.localeCompare(b.id)),periods:[...periods.values()],totals:{received:clients.reduce((s,c)=>s+c.received,0),used:clients.reduce((s,c)=>s+c.used,0),principal:clients.reduce((s,c)=>s+c.principal,0),interest:clients.reduce((s,c)=>s+c.interest,0)}};
+}

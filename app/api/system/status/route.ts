@@ -1,0 +1,3 @@
+import {env} from 'cloudflare:workers';
+import {member,load,json,error,actorFor,AuthError} from '../../../../lib/runtime';
+export async function GET(req:Request){try{const p=await member(),a=actorFor(p,new URL(req.url).searchParams.get('role')||'');if(!['Sales Admin','Kế toán','Kế Toán Trưởng'].includes(a.role))throw new AuthError('Không có quyền xem thiết lập',403);const {state}=await load();return json({storage:true,aiConfigured:!!(env as any).OPENAI_API_KEY,bankAccounts:state.bankAccounts.filter((b:any)=>b.active).length,ledgerEnabled:!!state.commerce,manualBank:true,manualCatalog:true})}catch(e){return error(e)}}

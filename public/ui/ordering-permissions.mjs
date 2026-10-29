@@ -1,0 +1,2 @@
+export const ORDERING_READ_ROLES=['Sales','Sales Admin','Bảo vệ','Kho','Thủ kho','Xe nâng','Kế toán','Kế Toán Trưởng','Giám đốc vùng','Giám đốc Thương mại'];
+export function orderingMenu(role){const items=[];if(['Sales','Sales Admin','Kế toán','Kế Toán Trưởng','Giám đốc vùng','Giám đốc Thương mại'].includes(role))items.push(['orders','box','Đặt hàng']);if(role==='Giám đốc Thương mại')items.push(['approvals','check','Phê duyệt DOA']);if(ORDERING_READ_ROLES.includes(role))items.push(['stations','warehouse','Điều hành 5 trạm']);return items}

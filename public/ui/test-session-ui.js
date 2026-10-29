@@ -1,0 +1,2 @@
+function testSessionMount(){if(!serverProfile?.testAccount||document.getElementById('test-session-account'))return;const host=document.querySelector('header .header-right');if(!host)return;const form=document.createElement('form');form.id='test-session-account';form.method='post';form.action='/logout';form.innerHTML='<span>cmc-test</span><button type="submit">Đăng xuất</button>';host.appendChild(form);}
+const testSessionRender=renderContent;renderContent=function(){testSessionRender();testSessionMount()};testSessionMount();

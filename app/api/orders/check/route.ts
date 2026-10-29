@@ -1,0 +1,3 @@
+import {member,load,json,error,actorFor,originCheck,AuthError} from '../../../../lib/runtime';
+import {checkOrder} from '../../../../lib/order-check.mjs';
+export async function POST(req:Request){try{originCheck(req);const p=await member(),body=await req.json() as any,a=actorFor(p,body.role);if(!['Sales','Sales Admin'].includes(a.role))throw new AuthError('Vai hiện tại không được tạo đơn',403);if(!body.payload||!Array.isArray(body.payload.lines)||body.payload.lines.length>100)throw Error('Đơn cần 1–100 sản phẩm');const {state,version}=await load();return json({version,...checkOrder(state,body.payload,a)})}catch(e){return error(e)}}

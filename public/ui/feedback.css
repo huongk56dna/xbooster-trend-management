@@ -1,0 +1,24 @@
+#toast,#toast:popover-open,.compact-ui #toast{position:fixed!important;inset:auto!important;top:calc(18px + env(safe-area-inset-top))!important;right:calc(18px + env(safe-area-inset-right))!important;bottom:auto!important;left:auto!important;transform:none!important;z-index:10000;display:none;flex-direction:column;gap:10px;width:min(390px,calc(100vw - 28px));max-width:calc(100vw - 28px);max-height:calc(100dvh - 40px);overflow-y:auto;background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;margin:0!important;box-shadow:none;color:var(--ink);font-size:13px}
+#toast::backdrop{background:transparent;pointer-events:none}
+.feedback-toast{display:flex;align-items:flex-start;gap:11px;width:100%;padding:15px 12px 15px 15px;border:1px solid #e6dfdb;border-left:4px solid #9e8273;border-radius:12px;background:#fff;box-shadow:0 8px 30px #36121526;pointer-events:auto;animation:feedback-in .16s ease-out}
+.feedback-toast-icon{display:grid;place-items:center;width:24px;height:24px;flex:0 0 24px;border-radius:50%;background:#f2ece7;color:#65473d;font-weight:700}
+.feedback-toast-text{flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.65;padding-top:1px;font-weight:500}
+.feedback-toast-close{padding:0!important;width:28px!important;min-height:28px!important;height:28px!important;flex:0 0 28px;border:0;background:transparent;font-size:23px!important;color:#82736c}
+.feedback-success{border-left-color:#27744d}.feedback-success .feedback-toast-icon{background:#e8f5ed;color:#227045}
+.feedback-error{border-left-color:#b60f20}.feedback-error .feedback-toast-icon{background:#ffebee;color:#b60f20}
+.feedback-warning{border-left-color:#c29522}.feedback-warning .feedback-toast-icon{background:#fff4d4;color:#856118}
+#action-confirmation,.compact-ui #action-confirmation{width:calc(100% - 28px)!important;max-width:460px!important;max-height:calc(100dvh - 36px);padding:28px!important;margin:auto;border:1px solid var(--line);border-radius:18px;color:var(--ink);overflow-y:auto;box-shadow:0 24px 80px #28100f33}
+#action-confirmation::backdrop{background:#29131880;backdrop-filter:blur(3px)}
+#action-confirmation h2{font-size:22px;line-height:1.4;margin:16px 0 12px;letter-spacing:-.4px}
+#action-confirmation p{font-size:13px;line-height:1.8;color:#72645e}
+#action-confirmation strong{color:#47221e;font-weight:650}
+.feedback-confirm-symbol{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:#fff3d6;color:#8b631c;font-size:26px;font-weight:700}
+.feedback-summary{margin:18px 0;padding:12px 16px;border:1px solid var(--line);background:#fcfaf8;border-radius:12px;font-size:12px}
+.feedback-summary>div{display:grid;grid-template-columns:100px minmax(0,1fr);gap:12px;padding:7px 0}
+.feedback-summary dt{color:#88786e}.feedback-summary dd{margin:0;white-space:pre-line;overflow-wrap:anywhere;font-weight:550;line-height:1.7}
+#action-confirmation .feedback-confirm-note{font-size:11px;color:#9a8779}
+#action-confirmation .formactions{display:flex;gap:12px;margin-top:24px}
+#action-confirmation .formactions button{flex:1;min-height:46px;font-size:13px}
+@keyframes feedback-in{from{opacity:0;translate:14px 0}to{opacity:1;translate:0 0}}
+@media(max-width:480px){#toast,#toast:popover-open,.compact-ui #toast{top:calc(10px + env(safe-area-inset-top))!important;right:12px!important;width:calc(100vw - 24px);max-width:calc(100vw - 24px)}#action-confirmation,.compact-ui #action-confirmation{padding:22px 18px!important}.feedback-summary>div{grid-template-columns:85px minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.feedback-toast{animation:none}}
